@@ -7,7 +7,11 @@ from model.museoDTO import Museo
 """
 
 class MuseoDAO:
-    def __init__(self):
+    def __init__(self,id, nome, tipologia):
+        self._id=id
+        self._nome=nome
+        self._tipologia=tipologia
+    #controllare
         pass
 
-    # TODO
+    # TODO  (usare metodi setter e getter, scritto io)
