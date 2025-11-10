@@ -7,11 +7,29 @@ from model.museoDTO import Museo
 """
 
 class MuseoDAO:
-    def __init__(self,id, nome, tipologia):
-        self._id=id
-        self._nome=nome
-        self._tipologia=tipologia
-    #controllare
+    def __init__(self):
         pass
 
-    # TODO  (usare metodi setter e getter, scritto io)
+    @staticmethod
+    def read_musei():
+        print("Executing read from database using SQL query")
+        results=[]
+        cnx=ConnessioneDB.get_connection()
+
+        if cnx is None:
+            print("connessione fallita")
+            return []
+
+        else:
+            cursor = cnx.cursor(dictionary=True)
+            query="""SELECT *
+                     FROM museo
+                     ORDER BY nome"""
+            cursor.execute(query)
+            for row in cursor:
+                museo=Museo(row["id"], row["nome"], row["tipologia"])
+                results.append(museo)
+
+            cursor.close()
+            cnx.close()
+            return results

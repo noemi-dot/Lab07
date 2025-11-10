@@ -7,13 +7,40 @@ from model.artefattoDTO import Artefatto
 """
 
 class ArtefattoDAO:
-    def __init__(self,id,nome,tipologia,epoca,id_museo):
-        self._id=id
-        self._nome=nome
-        self._tipologia=tipologia
-        self._epoca=epoca
-        self._id_museo=id_museo
-#controllare
+    def __init__(self):
         pass
 
-    # TODO  fare metodi setter e getter(scritto io)
+    @staticmethod
+    def read_artefatti(museo:str, epoca:str):
+        print("Executing read from database using SQL query")
+        results=[]
+        cnx=ConnessioneDB.get_connection()
+
+        if cnx is None:
+            print("connessione fallita")
+            return []
+
+        else:
+            cursor=cnx.cursor(dictionary=True)
+            query="""SELECT * FROM artefatto A 
+                    JOIN museo M ON A.id_museo=M.id"""
+            cursor.execute(query)
+            for row in cursor:
+                artefatto=Artefatto(row["id"], row["nome"], row["tipologia"], row["epoca"], row["id_museo"])
+                results.append(artefatto)
+
+            cursor.close()
+            cnx.close()
+            return results
+
+    @staticmethod
+    def read_epoche():
+        cnx=ConnessioneDB.get_connection()
+        cursor=cnx.cursor(dictionary=True)
+        cursor.execute("""SELECT DISTINCT epoca
+                       FROM artefatto
+                       ORDER BY epoca""")
+        epoche=[row["epoca"] for row in cursor]
+        cursor.close()
+        cnx.close()
+        return epoche
